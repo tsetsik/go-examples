@@ -1,0 +1,111 @@
+[
+    {
+        "op": "add",
+        "path": "/components/schemas/ExampleSchema",
+        "value": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "required": ["id", "name", "createdAt"]
+        }
+    },
+    {
+        "op": "add",
+        "path": "/paths/~1examples/get",
+        "value": {
+            "summary": "Get a list of examples",
+            "responses": {
+                "200": {
+                    "description": "A list of examples",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/ExampleSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    {
+        "op": "add",
+        "path": "/paths/~1examples/get",
+        "value": {
+            "summary": "Get a list of examples",
+            "responses": {
+                "200": {
+                    "description": "A list of examples",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/ExampleSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    {
+        "op": "add",
+        "path": "/paths/~1examples/get",
+        "value": {
+            "summary": "Get a list of examples",
+            "responses": {
+                "200": {
+                    "description": "A list of examples",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/ExampleSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    {
+        "op": "add",
+        "path": "/paths/~1examples/get",
+        "value": {
+            "summary": "Get a list of examples",
+            "responses": {
+                "200": {
+                    "description": "A list of examples",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/ExampleSchema"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+]
