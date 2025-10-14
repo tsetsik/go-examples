@@ -13,6 +13,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/tsetsik/go-examples/job-queue/internal/config"
 	"github.com/tsetsik/go-examples/job-queue/internal/core"
+	"github.com/tsetsik/go-examples/job-queue/internal/store"
 	"github.com/tsetsik/go-examples/job-queue/internal/workers"
 
 	"github.com/joho/godotenv"
@@ -60,7 +61,9 @@ func (s *Service) Start(ctx context.Context) error {
 	mux := mux.NewRouter()
 	jobWorker := workers.NewJobWorker(5, logger)
 
-	jobSvc := core.NewJobQueueService(jobWorker)
+	store := store.NewCacheStore[core.Job]()
+
+	jobSvc := core.NewJobQueueService(jobWorker, store)
 	resolver := NewHttpResolver(ctx, logger, s.cfg, jobSvc)
 
 	mux.HandleFunc("/status{job_id}", resolver.Status).Methods(http.MethodGet)
