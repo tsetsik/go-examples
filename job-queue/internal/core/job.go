@@ -3,15 +3,15 @@ package core
 import (
 	"fmt"
 
-	"github.com/go-playground/validator"
+	validator "github.com/go-playground/validator/v10"
 )
 
 type (
 	Status string
 
 	Job struct {
-		ID      string `json:"job_id" required:"true"`
-		Payload any    `json:"payload" required:"true"`
+		ID      string `json:"job_id" validate:"required"`
+		Payload any    `json:"payload" validate:"required"`
 		Status  Status `json:"status"`
 	}
 

@@ -1,4 +1,4 @@
-.PHONY: dep lint start stop
+.PHONY: dep lint start stop generate
 
 ## Ensure all dependencies are up to date
 deps:
@@ -15,4 +15,8 @@ start:
 ## Stop the application
 stop:
 	@docker compose down
+
+## Generate code
+generate:
+	@go generate ./...
 
