@@ -1,8 +1,10 @@
 package core
 
 type (
+	ProcessedJobFunc func(job *Job)
+
 	JobWorker interface {
-		Start()
+		Start(fn ProcessedJobFunc)
 		Enqueue(job *Job) error
 		Stop()
 	}

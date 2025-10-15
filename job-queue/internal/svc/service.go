@@ -20,7 +20,8 @@ import (
 )
 
 type Service struct {
-	cfg config.Config
+	cfg       config.Config
+	jobWorker core.JobWorker
 }
 
 func NewService() (*Service, error) {
@@ -59,23 +60,23 @@ func (s *Service) Start(ctx context.Context) error {
 	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{}))
 
 	mux := mux.NewRouter()
-	jobWorker := workers.NewJobWorker(5, logger)
 
-	store := store.NewCacheStore[core.Job]()
+	s.jobWorker = workers.NewJobWorker(5, logger)
 
-	jobSvc := core.NewJobQueueService(jobWorker, store)
+	jobStore := store.NewCacheStore[core.Job]()
+	jobSvc := core.NewJobQueueService(s.jobWorker, jobStore, logger)
 	resolver := NewHttpResolver(ctx, logger, s.cfg, jobSvc)
 
-	mux.HandleFunc("/status{job_id}", resolver.Status).Methods(http.MethodGet)
+	mux.HandleFunc("/status/{jobID}", resolver.Status).Methods(http.MethodGet)
 	mux.HandleFunc("/submit", resolver.Submit).Methods(http.MethodPost)
 
-	jobWorker.Start()
+	s.jobWorker.Start(jobSvc.ProcessedJob())
 
 	logger.Info("Starting server", slog.String("host", s.cfg.Host), slog.Int("port", s.cfg.Port))
 	return http.ListenAndServe(s.cfg.Host+":"+strconv.Itoa(s.cfg.Port), mux)
 }
 
 func (s *Service) Stop() error {
-	// Implement any necessary cleanup logic here
+	s.jobWorker.Stop()
 	return nil
 }

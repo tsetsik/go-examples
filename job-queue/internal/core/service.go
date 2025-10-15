@@ -2,12 +2,14 @@ package core
 
 import (
 	"fmt"
+	"log/slog"
 	"sync"
 )
 
 type (
 	JobQueueService interface {
 		Enqueue(job *Job) error
+		ProcessedJob() ProcessedJobFunc
 		Status(jobID string) (Status, error)
 	}
 
@@ -15,13 +17,15 @@ type (
 		jobWorker JobWorker
 		m         sync.RWMutex
 		store     Store[Job]
+		logger    *slog.Logger
 	}
 )
 
-func NewJobQueueService(jobWorker JobWorker, store Store[Job]) JobQueueService {
+func NewJobQueueService(jobWorker JobWorker, store Store[Job], logger *slog.Logger) JobQueueService {
 	return &jobQueueService{
 		jobWorker: jobWorker,
 		store:     store,
+		logger:    logger,
 	}
 }
 
@@ -46,6 +50,16 @@ func (s *jobQueueService) Enqueue(job *Job) error {
 	}
 
 	return nil
+}
+
+func (s *jobQueueService) ProcessedJob() ProcessedJobFunc {
+	return func(job *Job) {
+		job.Status = StatusDone
+		if err := s.store.Put(job.ID, *job); err != nil {
+			s.logger.Error("failed to update job status", slog.String("error", err.Error()))
+			return
+		}
+	}
 }
 
 func (s *jobQueueService) Status(jobID string) (Status, error) {

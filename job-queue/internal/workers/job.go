@@ -2,6 +2,7 @@ package workers
 
 import (
 	"log/slog"
+	"sync"
 
 	"github.com/tsetsik/go-examples/job-queue/internal/core"
 )
@@ -12,6 +13,7 @@ type (
 		numWorkers int
 		jobs       chan core.Job
 		results    chan core.JobProcessed
+		m          sync.Mutex
 	}
 )
 
@@ -24,9 +26,9 @@ func NewJobWorker(numWorkers int, logger *slog.Logger) core.JobWorker {
 	}
 }
 
-func (w *jobWorker) Start() {
+func (w *jobWorker) Start(fn core.ProcessedJobFunc) {
 	for i := 0; i < w.numWorkers; i++ {
-		go w.processJob(w.jobs, w.results)
+		go w.processJob(w.jobs, w.results, fn)
 	}
 }
 
@@ -43,9 +45,12 @@ func (w *jobWorker) Enqueue(job *core.Job) error {
 	return nil
 }
 
-func (w *jobWorker) processJob(jobs <-chan core.Job, results chan<- core.JobProcessed) {
+func (w *jobWorker) processJob(jobs <-chan core.Job, results chan<- core.JobProcessed, fn core.ProcessedJobFunc) {
 	for job := range jobs {
-		job.Status = core.StatusDone
+		w.m.Lock()
+
+		fn(&job)
+		w.m.Unlock()
 		results <- core.JobProcessed{Job: job, Err: nil, Code: 0}
 	}
 }

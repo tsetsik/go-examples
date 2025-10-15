@@ -9,6 +9,10 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
+            "env": {
+                "GO111MODULE": "on",
+                "PORT": "9393",
+            },
             "program": "/Users/tsvetomirdemerdjiev/Workspace/go/src/github.com/tsetsik/go-examples/job-queue/cmd/service"
         }
     ]

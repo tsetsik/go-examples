@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/tsetsik/go-examples/job-queue/internal/config"
 	"github.com/tsetsik/go-examples/job-queue/internal/core"
 )
@@ -48,5 +49,20 @@ func (s *httpResolver) Submit(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *httpResolver) Status(w http.ResponseWriter, r *http.Request) {
-	// Implementation for checking job status
+	vars := mux.Vars(r)
+	jobID := vars["jobID"]
+
+	status, err := s.jobSvc.Status(jobID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+
+	response := map[string]string{
+		"jobID":  jobID,
+		"status": string(status),
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
 }

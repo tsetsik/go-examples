@@ -1,0 +1,11 @@
+services:
+  web:
+    build: .
+    working_dir: /app
+    container_name: job-queue-web
+    restart: unless-stopped
+    environment:
+      - PORT=9393
+    ports:
+      - 8080:9393
+  
