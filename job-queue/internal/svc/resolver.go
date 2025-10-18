@@ -15,6 +15,7 @@ type (
 	HttpResolver interface {
 		Submit(w http.ResponseWriter, r *http.Request)
 		Status(w http.ResponseWriter, r *http.Request)
+		Health(w http.ResponseWriter, r *http.Request)
 	}
 
 	httpResolver struct {
@@ -65,4 +66,8 @@ func (s *httpResolver) Status(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
+}
+
+func (s *httpResolver) Health(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
 }

@@ -40,6 +40,7 @@ func (w *jobWorker) Enqueue(job *core.Job) error {
 
 	go func() {
 		w.jobs <- *job
+
 	}()
 
 	return nil

@@ -3,15 +3,17 @@ package config
 import "github.com/go-playground/validator"
 
 type Config struct {
-	Host       string
-	Port       int
-	JobWorkers int
+	Host       string `validate:"required,hostname|ip"`
+	Port       int    `validate:"required,min=1,max=65535"`
+	InfraPort  int    `validate:"required,min=1,max=65535"`
+	JobWorkers int    `validate:"required,min=1,max=100"`
 }
 
-func LoadConfig(host string, port, jobWorkers int) (*Config, error) {
+func LoadConfig(host string, port, infraPort, jobWorkers int) (*Config, error) {
 	return &Config{
 		Host:       host,
 		Port:       port,
+		InfraPort:  infraPort,
 		JobWorkers: jobWorkers,
 	}, nil
 }

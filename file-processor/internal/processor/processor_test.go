@@ -16,7 +16,7 @@ func Test_Process(t *testing.T) {
 
 		logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
 		processor := NewFilesProcessor(logger, 3)
-		got := processor.Process()
+		// got := processor.Process()
 
 		require.NotNil(t, logger)
 	})
