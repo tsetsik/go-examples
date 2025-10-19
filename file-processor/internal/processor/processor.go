@@ -65,9 +65,9 @@ func (fp *filesProcessor) Process(filesPath []string) []core.FileProcessed {
 	go func() {
 		for f := range fp.results {
 			fp.logger.Info("Received result from worker", slog.Any("file", f))
-			fp.wg.Done()
 
 			fp.output <- f
+			fp.wg.Done()
 		}
 	}()
 
@@ -76,12 +76,12 @@ func (fp *filesProcessor) Process(filesPath []string) []core.FileProcessed {
 	// All jobs are done, shutdown the channels
 	fp.shutdown()
 
-	output := make([]core.FileProcessed, 0, len(filesPath))
+	result := make([]core.FileProcessed, 0, len(filesPath))
 	for res := range fp.output {
-		output = append(output, res)
+		result = append(result, res)
 	}
 
-	return output
+	return result
 }
 
 func (fp *filesProcessor) shutdown() {
