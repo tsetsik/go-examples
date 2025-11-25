@@ -143,6 +143,21 @@ func (t *Tree) DFSPostorder() []int {
 	return t.postOrderTraverse(t.node, []int{})
 }
 
+func (t *Tree) isValid(n *Node, left, right *int) bool {
+	if n == nil {
+		return true
+	}
+
+	if (left != nil && n.Value <= *left) || (right != nil && n.Value >= *right) {
+		return false
+	}
+
+	return t.isValid(n.Left, left, &n.Value) && t.isValid(n.Right, &n.Value, right)
+}
+func (t *Tree) Validate() bool {
+	return t.isValid(t.node, nil, nil)
+}
+
 func (n *Node) Insert(value int) {
 	if value < n.Value {
 		if n.Left == nil {
@@ -249,6 +264,9 @@ func main() {
 		Insert(30).
 		Insert(5)
 
+	res := tree.Validate()
+	fmt.Println("\n\n res for Validate: ", res)
+
 	// list := tree.BreadthFirstSearchRecursive([]*Node{tree.node}, []int{})
 	// fmt.Println("\n\n list is: ", list)
 
@@ -261,8 +279,8 @@ func main() {
 	// fmt.Println("\n\n res is: ", res)
 
 	// 5, 7, 11, 12, 25, 30, 10
-	res := tree.DFSPostorder()
-	fmt.Println("\n\n res is: ", res)
+	// res := tree.DFSPostorder()
+	// fmt.Println("\n\n res is: ", res)
 
 	// tree.Print()
 
