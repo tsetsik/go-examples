@@ -1,6 +1,7 @@
 package workers
 
 import (
+	"fmt"
 	"log/slog"
 	"sync"
 
@@ -40,7 +41,6 @@ func (w *jobWorker) Enqueue(job *core.Job) error {
 
 	go func() {
 		w.jobs <- *job
-
 	}()
 
 	return nil
@@ -52,6 +52,7 @@ func (w *jobWorker) processJob(jobs <-chan core.Job, results chan<- core.JobProc
 
 		fn(&job)
 		w.m.Unlock()
+		fmt.Println("Processing job:", job.ID)
 		results <- core.JobProcessed{Job: job, Err: nil, Code: 0}
 	}
 }
