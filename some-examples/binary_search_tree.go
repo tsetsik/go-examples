@@ -89,6 +89,60 @@ func (t *Tree) BreadthFirstSearchRecursive(queue []*Node, list []int) []int {
 	return t.BreadthFirstSearchRecursive(queue, list)
 }
 
+func (t *Tree) inOrderTraverse(node *Node, list []int) []int {
+	if node.Left != nil {
+		list = t.inOrderTraverse(node.Left, list)
+	}
+
+	list = append(list, node.Value)
+
+	if node.Right != nil {
+		list = t.inOrderTraverse(node.Right, list)
+	}
+
+	return list
+}
+
+func (t *Tree) preOrderTraverse(node *Node, list []int) []int {
+	list = append(list, node.Value)
+
+	if node.Left != nil {
+		list = t.inOrderTraverse(node.Left, list)
+	}
+
+	if node.Right != nil {
+		list = t.inOrderTraverse(node.Right, list)
+	}
+
+	return list
+}
+
+func (t *Tree) postOrderTraverse(node *Node, list []int) []int {
+	if node.Left != nil {
+		list = t.postOrderTraverse(node.Left, list)
+	}
+
+	if node.Right != nil {
+		list = t.postOrderTraverse(node.Right, list)
+	}
+
+	list = append(list, node.Value)
+
+	return list
+}
+
+func (t *Tree) DFSInOrder() []int {
+	return t.inOrderTraverse(t.node, []int{})
+}
+
+func (t *Tree) DFSPreOrder() []int {
+	return t.preOrderTraverse(t.node, []int{})
+}
+
+func (t *Tree) DFSPostorder() []int {
+	return t.postOrderTraverse(t.node, []int{})
+}
+
 func (n *Node) Insert(value int) {
 	if value < n.Value {
 		if n.Left == nil {
@@ -184,7 +238,7 @@ func main() {
 	tree := NewTree()
 	//.    10
 	//.  7   12
-	//. 5   11   25
+	//. 5  11   25
 	//.            30
 	tree.
 		Insert(10).
@@ -195,8 +249,20 @@ func main() {
 		Insert(30).
 		Insert(5)
 
-	list := tree.BreadthFirstSearchRecursive([]*Node{tree.node}, []int{})
-	fmt.Println("\n\n list is: ", list)
+	// list := tree.BreadthFirstSearchRecursive([]*Node{tree.node}, []int{})
+	// fmt.Println("\n\n list is: ", list)
+
+	// 5, 7, 10, 11, 12, 25, 30
+	// res := tree.DFSInOrder()
+	// fmt.Println("\n\n res is: ", res)
+
+	// 10, 5, 7, 11, 12, 25, 30
+	// res := tree.DFSPreOrder()
+	// fmt.Println("\n\n res is: ", res)
+
+	// 5, 7, 11, 12, 25, 30, 10
+	res := tree.DFSPostorder()
+	fmt.Println("\n\n res is: ", res)
 
 	// tree.Print()
 
