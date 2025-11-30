@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func maxSubArray(nums []int) int {
 	maxSum, sum := nums[0], 0
